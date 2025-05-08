@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+enum Status {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  password      String
+  name          String
+  role          Role           @default(VIEWER)
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  documents     Document[]
+  ingestionJobs IngestionJob[]
+}
+
+model Document {
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String?
+  filePath      String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  createdBy     User           @relation(fields: [createdById], references: [id])
+  createdById   Int
+  ingestionJobs IngestionJob[]
+}
+
+model IngestionJob {
+  id          Int       @id @default(autoincrement())
+  document    Document  @relation(fields: [documentId], references: [id])
+  documentId  Int
+  status      Status    @default(PENDING)
+  startedBy   User      @relation(fields: [startedById], references: [id])
+  startedById Int
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+  output      String?
+}

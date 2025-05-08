@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  user-management-api:
+    build: .
+    container_name: user-management-api
+    ports:
+      - '8000:8000'  # 🔁 Updated to match your app port
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env.docker
+    depends_on:
+      - postgres-db
+
+  postgres-db:
+    image: postgres:15
+    container_name: user-management-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Postgres.28
+      POSTGRES_DB: userManagement
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
+      # - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
