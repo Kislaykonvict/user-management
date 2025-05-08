@@ -1,4 +1,4 @@
-#NestJS Backend Assignment – User and Document Management
+# NestJS Backend Assignment – User and Document Management
 
 This project provides a NestJS backend with APIs for::
 - User management (registration, authentication, profiles)
